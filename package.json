@@ -9,7 +9,7 @@
     "build": "prisma generate && tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
     "test:coverage": "jest --runInBand --coverage",
-    "seed": "ts-node --require tsconfig-paths/register -r dotenv/config prisma/seed.ts"
+    "seed": "tsx --require dotenv/config prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -60,6 +60,7 @@
     "rate-limit-redis": "^5.0.0",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
+    "tsx": "^4.22.4",
     "uuid": "^14.0.0",
     "winston": "^3.19.0",
     "zod": "^4.4.3"
