@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ATTENDEE
+  ORGANIZER
+  ADMIN
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum EventCategory {
+  MUSIC
+  NIGHTLIFE
+  PERFORMING_ARTS
+  HOLIDAYS
+  DATING
+  HOBBIES
+  BUSINESS
+  FOOD_AND_DRINK
+  CONFERENCE
+  CONCERT
+  COMMUNITY
+  SEASONAL
+  OTHER
+}
+
+model User {
+  id                  String    @id @default(uuid())
+  email               String    @unique
+  passwordHash        String
+  firstName           String
+  lastName            String
+  role                Role      @default(ATTENDEE)
+  isEmailVerified     Boolean   @default(false)
+  emailVerifyToken    String?
+  passwordResetToken  String?
+  passwordResetExpiry DateTime?
+  refreshToken        String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  events Event[]
+  orders Order[]
+}
+
+model Event {
+  id            String        @id @default(uuid())
+  organizerId   String
+  title         String
+  slug          String        @unique
+  description   String?
+  venue         String
+  timezone      String        @default("Africa/Lagos")
+  startDate     DateTime
+  endDate       DateTime
+  status        EventStatus   @default(DRAFT)
+  category      EventCategory @default(OTHER)
+  coverImageUrl String?
+  isFree        Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  organizer User         @relation(fields: [organizerId], references: [id])
+  reminders  EventReminder[]
+  tiers     TicketTier[]
+
+  @@index([category])
+  @@index([status])
+  @@index([organizerId])
+}
+
+model TicketTier {
+  id            String   @id @default(uuid())
+  eventId       String
+  name          String
+  description   String?
+  price         Decimal  @db.Decimal(10, 2)
+  totalQuantity Int
+  soldQuantity  Int      @default(0)
+  features      String[] @default([])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  event   Event    @relation(fields: [eventId], references: [id])
+  tickets Ticket[]
+
+  @@index([eventId])
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  userId      String
+  totalAmount Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  payment Payment?
+  tickets Ticket[]
+
+  @@index([userId])
+}
+
+model Ticket {
+  id         String    @id @default(uuid())
+  orderId    String
+  tierId     String
+  qrCodeHash String    @unique
+  isUsed     Boolean   @default(false)
+  usedAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  order Order      @relation(fields: [orderId], references: [id])
+  tier  TicketTier @relation(fields: [tierId], references: [id])
+
+  @@index([qrCodeHash])
+  @@index([orderId])
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  orderId   String        @unique
+  reference String        @unique
+  provider  String        @default("paystack")
+  status    PaymentStatus @default(PENDING)
+  paidAt    DateTime?
+  metadata  Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([reference])
+}
+
+model EventReminder {
+  id        String   @id @default(uuid())
+  eventId   String
+  userId    String
+  reminderAt DateTime
+  sent      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([userId])
+  @@index([reminderAt])
+}
