@@ -39,14 +39,14 @@ const router = Router();
  *             properties:
  *               firstName:
  *                 type: string
- *                 example: John
+ *                 example: Gojo
  *               lastName:
  *                 type: string
- *                 example: Doe
+ *                 example: Satoru
  *               email:
  *                 type: string
  *                 format: email
- *                 example: john@example.com
+ *                 example: gojo@example.com
  *               password:
  *                 type: string
  *                 example: Password123!
