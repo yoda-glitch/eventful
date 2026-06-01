@@ -50,6 +50,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 }));
 
 // Health check
+app.get('/', (_req, res) => {
+  res.json({ success: true, message: 'Welcome to Eventful API', docs: '/api-docs', health: '/health' });
+});
+
 app.get('/health', async (_req, res) => {
   const status = { database: 'up', redis: 'up' };
   let healthy = true;
