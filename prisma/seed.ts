@@ -2,8 +2,11 @@ import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcryptjs';
 
+const isProduction = process.env['NODE_ENV'] === 'production';
+
 const adapter = new PrismaPg({
   connectionString: process.env['DATABASE_URL'],
+  ...(isProduction && { ssl: { rejectUnauthorized: false } }),
 });
 
 const prisma = new PrismaClient({ adapter });
@@ -11,7 +14,6 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('Seeding database...');
 
-  // Create admin
   const adminHash = await bcrypt.hash('Admin123!', 12);
   await prisma.user.upsert({
     where: { email: 'admin@eventful.com' },
@@ -26,7 +28,6 @@ async function main() {
     },
   });
 
-  // Create organizer
   const orgHash = await bcrypt.hash('Organizer123!', 12);
   const organizer = await prisma.user.upsert({
     where: { email: 'organizer@eventful.com' },
@@ -41,7 +42,6 @@ async function main() {
     },
   });
 
-  // Create attendee
   const attHash = await bcrypt.hash('Attendee123!', 12);
   await prisma.user.upsert({
     where: { email: 'attendee@eventful.com' },
@@ -56,7 +56,6 @@ async function main() {
     },
   });
 
-  // Create events
   const event1 = await prisma.event.upsert({
     where: { slug: 'lagos-tech-summit-2026' },
     update: {},
@@ -64,7 +63,7 @@ async function main() {
       organizerId: organizer.id,
       title: 'Lagos Tech Summit 2026',
       slug: 'lagos-tech-summit-2026',
-      description: 'The biggest tech event in West Africa bringing together developers, designers and entrepreneurs.',
+      description: 'The biggest tech event in West Africa.',
       venue: 'Eko Hotel & Suites, Lagos',
       timezone: 'Africa/Lagos',
       startDate: new Date('2026-08-15T09:00:00.000Z'),
@@ -79,7 +78,7 @@ async function main() {
     skipDuplicates: true,
     data: [
       { eventId: event1.id, name: 'Regular', price: 5000, totalQuantity: 200 },
-      { eventId: event1.id, name: 'VIP', price: 15000, totalQuantity: 50, features: ['Front row', 'Free lunch', 'Networking dinner'] },
+      { eventId: event1.id, name: 'VIP', price: 15000, totalQuantity: 50, features: ['Front row', 'Free lunch'] },
     ],
   });
 
@@ -90,7 +89,7 @@ async function main() {
       organizerId: organizer.id,
       title: 'Afrobeats Night 2026',
       slug: 'afrobeats-night-2026',
-      description: 'A night of non-stop Afrobeats music featuring Nigeria\'s finest artists.',
+      description: 'A night of non-stop Afrobeats music.',
       venue: 'Tafawa Balewa Square, Lagos',
       timezone: 'Africa/Lagos',
       startDate: new Date('2026-09-20T18:00:00.000Z'),
@@ -106,7 +105,6 @@ async function main() {
     data: [
       { eventId: event2.id, name: 'General', price: 3000, totalQuantity: 500 },
       { eventId: event2.id, name: 'VIP', price: 10000, totalQuantity: 100, features: ['VIP lounge', 'Free drinks'] },
-      { eventId: event2.id, name: 'VVIP', price: 25000, totalQuantity: 20, features: ['Backstage access', 'Meet & greet', 'Free drinks'] },
     ],
   });
 
@@ -117,7 +115,7 @@ async function main() {
       organizerId: organizer.id,
       title: 'Abuja Startup Meetup',
       slug: 'abuja-startup-meetup-2026',
-      description: 'Free networking event for startup founders and investors in Abuja.',
+      description: 'Free networking event for startup founders.',
       venue: 'Co-Creation Hub, Abuja',
       timezone: 'Africa/Lagos',
       startDate: new Date('2026-10-01T10:00:00.000Z'),

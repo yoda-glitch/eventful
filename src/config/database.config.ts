@@ -3,7 +3,15 @@ import { PrismaClient } from '../generated/prisma/client';
 import { logger } from '@/shared/utils/logger';
 import { env } from './env.validation';
 
-const adapter = new PrismaPg({ connectionString: env.DATABASE_URL });
+const connectionString = env.DATABASE_URL;
+
+const adapter = new PrismaPg({
+  connectionString,
+  ...(env.NODE_ENV === 'production' && {
+    ssl: { rejectUnauthorized: false },
+  }),
+});
+
 const prisma = new PrismaClient({ adapter });
 
 prisma.$connect()
