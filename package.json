@@ -7,7 +7,7 @@
     "test": "jest --runInBand",
     "dev": "ts-node-dev --require tsconfig-paths/register --respawn --transpile-only src/main.ts",
     "build": "prisma generate && tsc -p tsconfig.build.json",
-    "start": "node dist/main.js",
+    "start": "node -r tsconfig-paths/register dist/main.js",
     "test:coverage": "jest --runInBand --coverage",
     "seed": "tsx --require dotenv/config prisma/seed.ts"
   },
@@ -53,6 +53,7 @@
     "helmet": "^8.2.0",
     "ioredis": "^5.11.0",
     "jsonwebtoken": "^9.0.3",
+    "module-alias": "^2.3.4",
     "nodemailer": "^8.0.9",
     "pg": "^8.21.0",
     "prisma": "^7.8.0",
