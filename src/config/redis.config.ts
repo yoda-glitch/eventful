@@ -2,7 +2,11 @@ import Redis from 'ioredis';
 import { logger } from '@/shared/utils/logger';
 import { env } from './env.validation';
 
-const redis = new Redis(env.REDIS_URL, {
+const redisUrl = env.REDIS_URL;
+const isTLS = redisUrl.startsWith('rediss://');
+
+const redis = new Redis(redisUrl, {
+  tls: isTLS ? { rejectUnauthorized: false } : undefined,
   retryStrategy(times) {
     const delay = Math.min(times * 50, 2000);
     return delay;
