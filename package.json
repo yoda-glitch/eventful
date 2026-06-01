@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --runInBand",
     "dev": "ts-node-dev --require tsconfig-paths/register --respawn --transpile-only src/main.ts",
-    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "build": "prisma generate && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "start": "node -r tsconfig-paths/register dist/main.js",
     "test:coverage": "jest --runInBand --coverage",
     "seed": "tsx --require dotenv/config prisma/seed.ts"
@@ -61,6 +61,7 @@
     "rate-limit-redis": "^5.0.0",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
+    "tsc-alias": "^1.8.17",
     "tsx": "^4.22.4",
     "uuid": "^14.0.0",
     "winston": "^3.19.0",
