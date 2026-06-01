@@ -18,7 +18,7 @@ const options: swaggerJsdoc.Options = {
         description: 'Development server',
       },
       {
-        url: 'https://api.eventful.com/api/v1',
+        url: 'https://eventful-api-b824ebd153c0.herokuapp.com/api/v1',
         description: 'Production server',
       },
     ],
