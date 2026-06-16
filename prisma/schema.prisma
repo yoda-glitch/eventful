@@ -82,6 +82,7 @@ model Event {
   status        EventStatus   @default(DRAFT)
   category      EventCategory @default(OTHER)
   coverImageUrl String?
+  galleryImages String[] @default([])
   isFree        Boolean       @default(false)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

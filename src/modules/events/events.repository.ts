@@ -16,6 +16,7 @@ export class EventsRepository {
         slug: data.slug,
         category: data.category as EventCategory ?? EventCategory.OTHER,
         coverImageUrl: data.coverImageUrl,
+        galleryImages: data.galleryImages ?? [],
         isFree: data.isFree ?? false,
       },
     });
