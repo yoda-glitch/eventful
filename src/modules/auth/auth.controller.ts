@@ -69,7 +69,7 @@ export const verifyEmail = async (
     const { token } = req.params;
     await service.verifyEmail(token as string);
     const frontendUrl = process.env['FRONTEND_URL'] || 'http://localhost:3000';
-    res.redirect(frontendUrl + '/auth/verify?status=success');
+    res.redirect(frontendUrl + '/auth/verify?status=success&token=' + token);
   } catch (err) {
     next(err);
   }
