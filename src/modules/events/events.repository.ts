@@ -86,6 +86,7 @@ export class EventsRepository {
   }
 
   async deleteEvent(id: string): Promise<void> {
+    await prisma.ticketTier.deleteMany({ where: { eventId: id } });
     await prisma.event.delete({ where: { id } });
   }
 
