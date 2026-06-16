@@ -30,6 +30,8 @@ export const getAllEvents = async (req: Request, res: Response, next: NextFuncti
       page: req.query['page'] ? Number(req.query['page']) : 1,
       limit: req.query['limit'] ? Number(req.query['limit']) : 10,
       status: req.query['status'] as string | undefined,
+      category: req.query['category'] as string | undefined,
+      search: req.query['search'] as string | undefined,
     };
     const result = await service.getAllEvents(query);
     res.json({ success: true, data: result });
