@@ -15,6 +15,7 @@ export const createEventSchema = z.object({
   endDate: z.string().datetime({ message: 'Invalid endDate format' }),
   category: z.enum(categories).default('OTHER'),
   coverImageUrl: z.string().url().optional(),
+  galleryImages: z.array(z.string().url()).max(2).optional(),
   isFree: z.boolean().default(false),
 }).refine((data) => new Date(data.endDate) > new Date(data.startDate), {
   message: 'endDate must be after startDate',
@@ -30,6 +31,7 @@ export const updateEventSchema = z.object({
   endDate: z.string().datetime().optional(),
   category: z.enum(categories).optional(),
   coverImageUrl: z.string().url().optional(),
+  galleryImages: z.array(z.string().url()).max(2).optional(),
   isFree: z.boolean().optional(),
 });
 

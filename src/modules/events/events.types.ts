@@ -7,6 +7,7 @@ export interface CreateEventDto {
   endDate: string;
   category?: string;
   coverImageUrl?: string;
+  galleryImages?: string[];
   isFree?: boolean;
 }
 
@@ -19,6 +20,7 @@ export interface UpdateEventDto {
   endDate?: string;
   category?: string;
   coverImageUrl?: string;
+  galleryImages?: string[];
   isFree?: boolean;
 }
 
